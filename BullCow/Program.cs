@@ -15,20 +15,51 @@
             Console.WriteLine("Got it. The number is ready. You may start. Please enter your suggestion.");
             Console.WriteLine(myNumber);
             string inputNumber = Console.ReadLine();
-            WhatMyNumber whatMyNumber = new WhatMyNumber();
-            whatMyNumber.WhatNumber(inputNumber, myNumber);
+            GameLogic whatMyNumber = new GameLogic(inputNumber, myNumber);
+            bool keepPlaying = true;
+
+            whatMyNumber.GamePlay();
+
+            //whatMyNumber.CountBull(inputNumber, myNumber);
+            //whatMyNumber.IfNumberGuessed(inputNumber, myNumber);
+            //whatMyNumber.CountCow(inputNumber, myNumber);
         }
     }
 
-    public class WhatMyNumber
+    public class GameLogic(string inputNumber, string myNumber)
     {
-        public void WhatNumber(string inputNumber, string myNumber)
-        {
-            int bull = 0;
-            int cow = 0;
-            int[] myNumberArray = myNumber.Select(c => int.Parse(c.ToString())).ToArray();
-            int[] inputNumberArray = inputNumber.Select(c => int.Parse(c.ToString())).ToArray();
+        int bull = 0;
+        int cow = 0;
+        int[] myNumberArray = myNumber.Select(c => int.Parse(c.ToString())).ToArray();
+        int[] inputNumberArray = inputNumber.Select(c => int.Parse(c.ToString())).ToArray();
 
+        public void GamePlay()
+        {
+            while (true)
+            {
+                if (IfNumberGuessed(inputNumber, myNumber))
+                {
+                    Console.WriteLine("C O N G R A T U L A T I O N!!! You GUESS the number!");
+                    break;
+                }
+                else
+                {
+                    CountBull(inputNumber, myNumber);
+                    CountCow(inputNumber, myNumber);
+                }
+            }
+        }
+
+        public bool IfNumberGuessed(string inputNumber, string myNumber)
+        {
+            if (inputNumber == myNumber)
+                return true;
+
+            return false;
+        }
+
+        public void CountBull(string inputNumber, string myNumber)
+        {
             for (int i = 0; i < 4; i++)
             {
                 if (myNumberArray[i] == inputNumberArray[i])
@@ -45,6 +76,32 @@
                     break;
                 case > 1:
                     Console.WriteLine($"There are {bull} bulls");
+                    break;
+            }
+        }
+
+        public void CountCow(string inputNumber, string myNumber)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (myNumberArray[i] != inputNumberArray[i])
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (myNumberArray[i] == inputNumberArray[j])
+                            cow++;
+                    }
+            }
+
+            switch (cow)
+            {
+                case 0:
+                    Console.WriteLine("There is NO cow");
+                    break;
+                case 1:
+                    Console.WriteLine($"There is {cow} cow");
+                    break;
+                case > 1:
+                    Console.WriteLine($"There are {cow} cows");
                     break;
             }
         }
