@@ -1,28 +1,74 @@
 ﻿namespace BullCow
 {
     using System;
-    using System.ComponentModel.Design;
-    using System.Runtime.CompilerServices;
 
     public class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, You are in the Game Bull&Cow! \nLet's start \nNow it's my turn. I'm thinking the 4-digit number and you should guess it. \nHere is the rules: \nif you guess digit and it is on its place - I answer \"Bull\" \nif you guess digit, but it is on another place - I answer \"Cow\"");
-            //Console.WriteLine("Input the number. I will use it only in final comparing");
-            Random random = new Random();
-            var myNumber = random.Next(1000, 10000).ToString();
-            Console.WriteLine("Got it. The number is ready. You may start. Please enter your suggestion.");
-            Console.WriteLine(myNumber);
-            string inputNumber = Console.ReadLine();
-            GameLogic whatMyNumber = new GameLogic(inputNumber, myNumber);
+            Console.WriteLine("Hello, You are in the Game Bull&Cow! ");
             bool keepPlaying = true;
+            do
+            {
+                Console.WriteLine("Let's start \nI'm thinking the 4-digit number and you should guess it. \nHere is the rules: \nif you guess digit and it is on its place - I answer \"Bull\" \nif you guess digit, but it is on another place - I answer \"Cow\"");
 
-            whatMyNumber.GamePlay();
+                Random random = new Random();
+                string myNumber;
 
-            //whatMyNumber.CountBull(inputNumber, myNumber);
-            //whatMyNumber.IfNumberGuessed(inputNumber, myNumber);
-            //whatMyNumber.CountCow(inputNumber, myNumber);
+                do
+                {
+                    var digits = Enumerable.Range(0, 10).OrderBy(_ => random.Next()).Take(4);
+                    myNumber = string.Join("", digits);
+                }
+                while (myNumber.Length != 4);
+
+                Console.WriteLine(myNumber);
+                Console.Write("Got it. The number is ready. You may start. ");
+
+                bool keepGuessNumber = true;
+
+                while (keepGuessNumber)
+                {
+                    string inputNumber;
+                    do
+                    {
+                        Console.WriteLine("Please enter your number:");
+                        inputNumber = Console.ReadLine();
+                        if (!inputNumber.All(char.IsDigit) || inputNumber.Length != 4)
+                        {
+                            Console.WriteLine("Invalid input. Make sure to enter exactly 4 digits.");
+                        }
+                    }
+                    while (!inputNumber.All(char.IsDigit) || inputNumber.Length != 4);
+
+
+                    GameLogic whatMyNumber = new GameLogic(inputNumber, myNumber);
+                    keepGuessNumber = whatMyNumber.GamePlay();
+                }
+
+                Console.WriteLine("Do you want to play one more time? Y/N");
+
+                string answer = String.Empty;
+                do
+                {
+                    answer = Console.ReadLine();
+                    switch (answer.ToLower())
+                    {
+                        case "y":
+                            keepPlaying = true;
+                            break;
+                        case "n":
+                            keepPlaying = false;
+                            Console.WriteLine("Goodbye! Thanks for game!");
+                            break;
+                        default:
+                            Console.WriteLine("I don't understand you. Please enter Y or N");
+                            break;
+                    }
+                }
+                while (answer.ToLower() != "y" && answer.ToLower() != "n");
+            }
+            while (keepPlaying);
         }
     }
 
@@ -33,20 +79,18 @@
         int[] myNumberArray = myNumber.Select(c => int.Parse(c.ToString())).ToArray();
         int[] inputNumberArray = inputNumber.Select(c => int.Parse(c.ToString())).ToArray();
 
-        public void GamePlay()
+        public bool GamePlay()
         {
-            while (true)
+            if (IfNumberGuessed(inputNumber, myNumber))
             {
-                if (IfNumberGuessed(inputNumber, myNumber))
-                {
-                    Console.WriteLine("C O N G R A T U L A T I O N!!! You GUESS the number!");
-                    break;
-                }
-                else
-                {
-                    CountBull(inputNumber, myNumber);
-                    CountCow(inputNumber, myNumber);
-                }
+                Console.WriteLine("C O N G R A T U L A T I O N!!! You GUESS the number!");
+                return false;
+            }
+            else
+            {
+                CountBull(inputNumber, myNumber);
+                CountCow(inputNumber, myNumber);
+                return true;
             }
         }
 
