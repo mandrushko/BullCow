@@ -5,11 +5,11 @@
     public class Program
     {
         static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, You are in the Game Bull&Cow! ");
+        {            
+            Console.WriteLine("Hello!!! \nYou are in the Game Bull&Cow! ");
             bool keepPlaying = true;
             do
-            {
+            {                
                 Console.WriteLine("Let's start \nI'm thinking the 4-digit number and you should guess it. \nHere is the rules: \nif you guess digit and it is on its place - I answer \"Bull\" \nif you guess digit, but it is on another place - I answer \"Cow\"");
 
                 Random random = new Random();
@@ -56,6 +56,7 @@
                     {
                         case "y":
                             keepPlaying = true;
+                            Console.Clear();
                             break;
                         case "n":
                             keepPlaying = false;
